@@ -56,7 +56,7 @@ I have 3 main directories in the same path:
 
 ## Screenshots
 
-<img src="imgs/2.png">
+<img src="imgs/2.PNG">
 <img src="imgs/check_clean_repos.png">
 <img src="imgs/check_commit_repos.png">
 <img src="imgs/check_pull_repos.png">
