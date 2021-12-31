@@ -62,7 +62,7 @@ I have 3 main directories in the same path:
 <img src="imgs/check_pull_repos.png">
 <img src="imgs/check_push_repos.png">
 <img src="imgs/check_repos_no_commits_yet.png">
-<img src="imgs/list_all_dirs .png">
+<img src="imgs/list_all_dirs.png">
 <img src="imgs/print_array.png">
 
 ## About The Author
