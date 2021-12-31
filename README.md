@@ -5,13 +5,6 @@
 This project scans all git repos in my local directory; then outputs a summary
 of all my projects, and lists repos that needs to be committed, pushed, or pulled.
 
-I developed this project in Bash; mainly to train my new skills in Shell & Bash,
-after studying 3 courses in Datacamp related to Shell, Git, and Bash scripting:
-
-<img src="imgs/intro-to-bash-scripting.PNG">
-<img src="imgs/intro-to-git.PNG">
-<img src="imgs/intro-to-shell.PNG">
-
 ## Project Structure
 I have 3 main directories in the same path:
 * `git-management-automation`: Which contains this project
