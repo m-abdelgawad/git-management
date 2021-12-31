@@ -8,9 +8,9 @@ of all my projects, and lists repos that needs to be committed, pushed, or pulle
 I developed this project in Bash; mainly to train my new skills in Shell & Bash,
 after studying 3 courses in Datacamp related to Shell, Git, and Bash scripting:
 
-<img src="imgs/intro-to-bash-scripting.png">
-<img src="imgs/intro-to-git.png">
-<img src="imgs/intro-to-shell.png">
+<img src="imgs/intro-to-bash-scripting.PNG">
+<img src="imgs/intro-to-git.PNG">
+<img src="imgs/intro-to-shell.PNG">
 
 ## Project Structure
 I have 3 main directories in the same path:
@@ -18,7 +18,7 @@ I have 3 main directories in the same path:
 * `Public`: Which contains all Git repos that I am hosting publicly on Github.
 * `Private`: Which contains all Git repos that I hosting privately on Github.
 
-<img src="imgs/1.png">
+<img src="imgs/1.PNG">
 
 > Note that `public` and `private` repos are separated as I often duplicate a private repo then host it as a public repo after removing all sensitive data.
 
