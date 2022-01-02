@@ -3,36 +3,36 @@
 ## Project Overview
 
 A Bash script that scans all Git repositories in my local directory; then outputs a summary
-of all my projects, and lists repos that needs to be committed, pushed, or pulled.
+of all my projects, and lists repositories that need to be committed, pushed, or pulled.
 
 ## Project Structure
 I have 3 main directories in the same path:
 * `Git-management-automation`: Which contains this project
-* `Public`: Which contains all Git repos that I am hosting publicly on Github.
-* `Private`: Which contains all Git repos that I hosting privately on Github.
+* `Public`: Which contains all Git repositories that I am hosting publicly on Github.
+* `Private`: Which contains all Git repositories that I hosting privately on Github.
 
 <img src="imgs/1.PNG">
 
-> Note that `public` and `private` repos are separated as I often duplicate a private repo then host publicly after removing all sensitive data.
+> Note that `public` and `private` repositories are separated as I often duplicate a private repository then host publicly after removing all sensitive data.
 
 ## Main Features
-* Scans all repos directories in both the `Public` and `Private` directories.
+* Scans all repositories directories in both the `Public` and `Private` directories.
 
-* Run `Git status` in each repo.
+* Run `Git status` in each repository.
 
 * Generates a full summary report including:
 
-    * Count of public repos.
-    * Count of private repos.
-    * Total count of all existing repos.
-    * Count of repos that have changes need to be committed.
-    * Count of repos that have commits needs to be pushed.
-    * Count of repos that have pull requests need to be made.
-    * Count of repos that don't have any commits yet.
-    * Count of repos that don't have any remotes configured.
-    * Count of clean repos that need no actions.  
+    * Count of public repositories.
+    * Count of private repositories.
+    * Total count of all existing repositories.
+    * Count of repositories that have changes need to be committed.
+    * Count of repositories that have commits needs to be pushed.
+    * Count of repositories that have pull requests need to be made.
+    * Count of repositories that don't have any commits yet.
+    * Count of repositories that don't have any remotes configured.
+    * Count of clean repositories that need no actions.  
       
-* Lists the absolute paths of repos only in the following cases:
+* Lists the absolute paths of repositories only in the following cases:
     * Have changes need to be committed.
     * Have commits need to be pushed.
     * Have pull requests need to be made.
