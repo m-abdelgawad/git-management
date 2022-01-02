@@ -33,9 +33,9 @@ I have 3 main directories in the same path:
     * Count of clean repositories that need no actions.  
       
 * Lists the absolute paths of repositories only in the following cases:
-    * Have changes need to be committed.
-    * Have commits need to be pushed.
-    * Have pull requests need to be made.
+    * Have changes that need to be committed.
+    * Have commits that need to be pushed.
+    * Have pull requests that need to be made.
     * Don't have any commits yet.
     * Don't have any remotes configured.
     * Not Git repositories
