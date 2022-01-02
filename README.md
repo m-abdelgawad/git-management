@@ -7,13 +7,13 @@ of all my projects, and lists repositories that need to be committed, pushed, or
 
 ## Project Structure
 I have 3 main directories in the same path:
-* `Git-management-automation`: Which contains this project
+* `Git-management-automation`: Which contains this project.
 * `Public`: Which contains all Git repositories that I am hosting publicly on Github.
-* `Private`: Which contains all Git repositories that I hosting privately on Github.
+* `Private`: Which contains all Git repositories that I am hosting privately on Github.
 
 <img src="imgs/1.PNG">
 
-> Note that `public` and `private` repositories are separated as I often duplicate a private repository then host publicly after removing all sensitive data.
+> Note that `public` and `private` repositories are separated as I often duplicate a private repository then host it publicly after removing all sensitive data.
 
 ## Main Features
 * Scans all repositories directories in both the `Public` and `Private` directories.
