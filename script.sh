@@ -2,6 +2,9 @@
 # The above line so the interpreter knows it is a Bash script and to use
 # Bash located in /usr/bash
 
+# Get the current date/time to mark the start of execution
+start=`date +%s`
+
 # Declare the paths of the public and private directories with a wildcard
 # to list only all directories; as a directory always end with a slash '/'
 public_dir="../Public/*/"
@@ -11,8 +14,8 @@ private_dir="../Private/*/"
 current_dir=$(pwd)
 
 
-function list_all_dirs () {
-    # A function to echo a list of all directories paths in a specific path,
+function list_repos () {
+    # A function to echo a list of all git repo paths in a specific path,
     # All returned paths are absolute and match windows format rather than linux
     # format.
     # Arguments: 
@@ -20,21 +23,23 @@ function list_all_dirs () {
 
     # Loop over all directories in the argument path
     for repo in $1
-    do
-        # Change the current working directory to the current repo
-        cd $repo
-        # Generally, the output of echo $(pwd) alone will be just like that:
-        # /d:/Repos/Public/AIRs-UCIPs-automation-from-Oracle-DB
-        # The second part: sed 's/./&:/2' inserts a ':' after the second
-        # character to become: /d --> /d:
-        # Finally, the third part sed 's/.//1' removes the first character '/'
-        # resulting in an output like that:
-        # d:/Repos/Public/AIRs-UCIPs-automation-from-Oracle-DB
-        echo $(pwd) | sed 's/./&:/2' | sed 's/.//1'
-        cd $current_dir
+    do  
+        # Check if the current directory is a git repo or not
+        if git -C $repo status &>/dev/null; then
+            # Change the current working directory to the current repo
+            cd $repo
+            # Generally, the output of echo $(pwd) alone will be just like that:
+            # /d:/Repos/Public/AIRs-UCIPs-automation-from-Oracle-DB
+            # The second part: sed 's/./&:/2' inserts a ':' after the second
+            # character to become: /d --> /d:
+            # Finally, the third part sed 's/.//1' removes the first character '/'
+            # resulting in an output like that:
+            # d:/Repos/Public/AIRs-UCIPs-automation-from-Oracle-DB
+            echo $(pwd) | sed 's/./&:/2' | sed 's/.//1'
+            cd $current_dir
+        fi
     done
 }
-
 
 function print_array (){
     # A function to print the elements of an array.
@@ -136,14 +141,69 @@ function check_repos_no_commits_yet (){
     done
 }
 
+
+function check_not_repos (){
+    # A function to echo all directories paths that aren't git repos.
+    # Arguments: 
+    #   $@: an array of git repos paths
+
+    # Loop over all the rdirectoriesepos in the argument array
+    for dir in $public_dir $private_dir
+    do
+        # Check if the current path isn't a git repo
+        if ! git -C $dir status &>/dev/null; then
+            # Change the current working directory to the current directory
+            cd $dir
+            # echo the absolute path of the current directory in windows format
+            echo $(pwd) | sed 's/./&:/2' | sed 's/.//1'
+            # Return back to the working directory
+            cd $current_dir
+        fi
+    done
+}
+
+
+function repos_with_no_remote (){
+    # A function to echo all git repos paths that has no remote configured!
+    # Arguments: 
+    #   $@: an array of git repos paths
+
+    # Loop over all the repos in the argument array
+    for repo in $@
+    do
+        # Check status of the current repo and filter only repos that don't 
+        # have a remote configured
+        if ! git -C $repo remote -v | grep -q "push"; then
+            echo $repo
+        fi
+    done
+}
+
+
+function print_summary(){
+    # Check the length of argument array
+    if [ $1 -gt 0 ]; then
+        # Print the headline of the list to be printed
+        printf "\n$2:\n"
+        # Loop over the public array "array_to_print"
+        for item in ${array_to_print[@]}
+        do  
+            # Print the elements of the array
+            printf "    > "
+            echo $item
+        done
+    fi
+}
+
+
 # Create an array of all public repos by appending the output of a 
 # shell-in-a-shell
 declare -a public_repos
-public_repos+=($(list_all_dirs "$public_dir"))
+public_repos+=($(list_repos "$public_dir"))
 
 # Create an array of all private repos
 declare -a private_repos
-private_repos+=($(list_all_dirs "$private_dir"))
+private_repos+=($(list_repos "$private_dir"))
 
 # Combine the public repos and private repos arrays in one big array
 all_repos=("${public_repos[@]}" "${private_repos[@]}")
@@ -163,73 +223,64 @@ repos_to_pull+=($(check_pull_repos ${all_repos[@]}))
 # Check repos with no commits yet!
 repos_no_commits_yet+=($(check_repos_no_commits_yet ${all_repos[@]}))
 
+# Check repos that don't have remote configured
+repos_with_no_remote+=($(repos_with_no_remote ${all_repos[@]}))
+
+# Check directories that aren't git repos
+not_repos+=($(check_not_repos ${all_repos[@]}))
+
 # Echo a summary of all the results:
-# EOS: End of string; which is a flag that we can name it as we like; to
+# EOF: End of string; which is a flag that we can name it as we like; to
 # indicate the end of a string.
-cat << EOS
+cat << EOF
 
 Summary:
-    > We have total of ${#all_repos[@]} Repos: ${#public_repos[@]} \
+    > We have total of ${#all_repos[@]} Git repositories: ${#public_repos[@]} \
 are Public, and ${#private_repos[@]} are Private.
-    > Repos to commit = ${#repos_to_commit[@]}
-    > Repos to push = ${#repos_to_push[@]}
-    > Repos to pull = ${#repos_to_pull[@]}
-    > Repos with no commits yet = ${#repos_no_commits_yet[@]}
+    > Repos to Commit = ${#repos_to_commit[@]}
+    > Repos to Push = ${#repos_to_push[@]}
+    > Repos to Pull = ${#repos_to_pull[@]}
+    > Repos With no Commits yet = ${#repos_no_commits_yet[@]}
+    > Repos with no remote configured = ${#repos_with_no_remote[@]}
+    > Not-a-git Directories = ${#not_repos[@]}
     > Clean Repos = ${#clean_repos[@]}
-EOS
+EOF
 
 # Check if number of repos to commit is larger than zero; then print theses
 # repos paths.
-if [ ${#repos_to_commit[@]} -gt 0 ]; then
-    cat << EOS
-
-Repos to commit:
-$(for repo in ${repos_to_commit[@]}
-do  
-    printf "    > "
-    echo $repo
-done)
-EOS
-fi
+array_to_print=( "${repos_to_commit[@]}" )
+print_summary ${#array_to_print[@]} "Repos to Commit"
 
 # Check if number of repos to push is larger than zero; then print theses
 # repos paths.
-if [ ${#repos_to_push[@]} -gt 0 ]; then
-    cat << EOS
-
-Repos to push:
-$(for repo in ${repos_to_pull[@]}
-do  
-    printf "    > "
-    echo $repo
-done)
-EOS
-fi
+array_to_print=( "${repos_to_push[@]}" )
+print_summary ${#array_to_print[@]} "Repos to Push"
 
 # Check if number of repos to pull is larger than zero; then print theses
 # repos paths.
-if [ ${#repos_to_pull[@]} -gt 0 ]; then
-    cat << EOS
-
-Repos to pull:
-$(for repo in ${repos_to_push[@]}
-do  
-    printf "    > "
-    echo $repo
-done)
-EOS
-fi
+array_to_print=( "${repos_to_pull[@]}" )
+print_summary ${#array_to_print[@]} "Repos to Pull"
 
 # Check if number of repos to push is larger than zero; then print theses
 # repos paths.
-if [ ${#repos_no_commits_yet[@]} -gt 0 ]; then
-    cat << EOS
+array_to_print=( "${repos_no_commits_yet[@]}" )
+print_summary ${#array_to_print[@]} "Repos With no Commits yet"
 
-Repos with no commits yet:
-$(for repo in ${repos_no_commits_yet[@]}
-do  
-    printf "    > "
-    echo $repo
-done)
-EOS
-fi
+# Check if number of repos with no remote configured is larger than zero; then 
+# print theses repos paths.
+array_to_print=( "${repos_with_no_remote[@]}" )
+print_summary ${#array_to_print[@]} "Repos With no Remote Configured"
+
+# Check if number of directories that aren't repo is larger than zero; then 
+# print theses repos paths.
+array_to_print=( "${not_repos[@]}" )
+print_summary ${#array_to_print[@]} "Directories That are not Git Repos"
+
+# Get the current date/time to mark the end of execution
+end=`date +%s`
+
+# Calculate total execution time in minutes
+runtime=$((($end - $start)/60))
+
+#
+printf "\n\nTotal Executation Time = $runtime minutes.\n"
