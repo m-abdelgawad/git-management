@@ -282,5 +282,5 @@ end=`date +%s`
 # Calculate total execution time in minutes
 runtime=$((($end - $start)/60))
 
-#
+# Print total executation time
 printf "\n\nTotal Executation Time = $runtime minutes.\n"
